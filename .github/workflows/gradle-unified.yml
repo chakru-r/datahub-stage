@@ -23,6 +23,7 @@ concurrency:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DOCKER_CACHE: "GITHUB"
   DEPOT_TOKEN: ${{ secrets.DEPOT_TOKEN }}
   DEPOT_PROJECT_ID: ${{ secrets.DEPOT_PROJECT_ID }}
   DATAHUB_GMS_IMAGE: "acryldata/datahub-gms"
@@ -143,8 +144,12 @@ jobs:
         uses: acryldata/sane-checkout-action@v3
     
       - name: Set up Depot CLI
+        if: ${{ env.DOCKER_CACHE == 'DEPOT' }}
         uses: depot/setup-action@v1
-      - run: |
+
+      - name: configure-docker
+        if: ${{ env.DOCKER_CACHE == 'DEPOT' }}  
+        run: |
           depot configure-docker
 
       - name: Pre-build artifacts for docker image
