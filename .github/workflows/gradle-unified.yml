@@ -22,6 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DATAHUB_GMS_IMAGE: "acryldata/datahub-gms"
   DATAHUB_FRONTEND_IMAGE: "acryldata/datahub-frontend-react"
   DATAHUB_MAE_CONSUMER_IMAGE: "acryldata/datahub-mae-consumer"
