@@ -126,7 +126,7 @@ project.afterEvaluate {
     }
 
     // Add GitHub Actions specific arguments if running in GitHub workflow
-    if (System.getenv("GITHUB_ACTIONS") == "true") {
+    if (System.getenv("DOCKER_CACHE") == "GITHUB") {
       def githubToken = System.getenv("GITHUB_TOKEN")
       if (githubToken) {
         dockerCmd += ["--cache-from", "type=gha,token=${githubToken}"]
@@ -136,7 +136,7 @@ project.afterEvaluate {
         dockerCmd += ["--cache-to", "type=gha,mode=max"]
       }
     }
-
+  
     // Generate image metadata (we really just want the sha256 hash of the image)
     dockerCmd += ["--metadata-file", marker]
 

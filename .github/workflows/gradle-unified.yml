@@ -23,6 +23,8 @@ concurrency:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DEPOT_TOKEN: ${{ secrets.DEPOT_TOKEN }}
+  DEPOT_PROJECT_ID: ${{ secrets.DEPOT_PROJECT_ID }}
   DATAHUB_GMS_IMAGE: "acryldata/datahub-gms"
   DATAHUB_FRONTEND_IMAGE: "acryldata/datahub-frontend-react"
   DATAHUB_MAE_CONSUMER_IMAGE: "acryldata/datahub-mae-consumer"
@@ -139,6 +141,11 @@ jobs:
 
       - name: Check out the repo
         uses: acryldata/sane-checkout-action@v3
+    
+      - name: Set up Depot CLI
+        uses: depot/setup-action@v1
+      - run: |
+          depot configure-docker
 
       - name: Pre-build artifacts for docker image
         run: |
@@ -154,4 +161,4 @@ jobs:
     
       - name: Show images
         run: |
-          docker images            
+          docker images
