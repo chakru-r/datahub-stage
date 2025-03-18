@@ -125,6 +125,18 @@ project.afterEvaluate {
       dockerCmd << "--platform=${extension.platforms.get().join(',')}"
     }
 
+    // Add GitHub Actions specific arguments if running in GitHub workflow
+    if (System.getenv("GITHUB_ACTIONS") == "true") {
+      def githubToken = System.getenv("GITHUB_TOKEN")
+      if (githubToken) {
+        dockerCmd += ["--cache-from", "type=gha,token=${githubToken}"]
+        dockerCmd += ["--cache-to", "type=gha,mode=max,token=${githubToken}"]
+      } else {
+        dockerCmd += ["--cache-from", "type=gha"]
+        dockerCmd += ["--cache-to", "type=gha,mode=max"]
+      }
+    }
+
     // Generate image metadata (we really just want the sha256 hash of the image)
     dockerCmd += ["--metadata-file", marker]
 
@@ -140,7 +152,15 @@ project.afterEvaluate {
     // Some projects use a Dockerfile with the non-default name.
     dockerCmd += ["--file", extension.dockerfile.get().toPath()]
 
-    println(dockerCmd.join(" "))
+    // Mask GitHub token in the output for security
+    def maskedCmd = dockerCmd.collect { arg ->
+      if (arg.startsWith("type=gha,token=")) {
+        "type=gha,token=****"
+      } else {
+        arg
+      }
+    }
+    println(maskedCmd.join(" "))
     commandLine dockerCmd
 
     outputs.upToDateWhen {
