@@ -89,6 +89,7 @@ public class Config extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     config.put("noCode", "true");
+    int i = 0;
 
     WebApplicationContext ctx =
         WebApplicationContextUtils.getRequiredWebApplicationContext(req.getServletContext());
