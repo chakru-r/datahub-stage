@@ -120,7 +120,7 @@ project.afterEvaluate {
 
     def dockerCmd = []
 
-    dockerCmd += ["docker", "buildx", "build", "--load"]
+    dockerCmd += ["docker", "buildx", "build", "--progress=plain", "--load"]
     if (extension.platforms.get()) {
       dockerCmd << "--platform=${extension.platforms.get().join(',')}"
     }

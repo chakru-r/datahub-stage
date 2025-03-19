@@ -155,7 +155,10 @@ jobs:
       - name: Pre-build artifacts for docker image
         run: |
           ./gradlew quickstartdebugprepareall
+          find metadata-service/war/build/docker/
+          find datahub-frontend/build/docker/
 
+      
       - name: run unit tests
         run: |
           ./gradlew :metadata-service:iceberg-catalog:test
