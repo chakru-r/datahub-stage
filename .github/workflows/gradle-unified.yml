@@ -119,8 +119,60 @@ jobs:
           echo "Enable PR publish: ${{ env.ENABLE_PUBLISH }}"
           echo "publish=${{ env.ENABLE_PUBLISH }}" >> "$GITHUB_OUTPUT"
 
+  unit-tests:
+    name: run tests
+    runs-on: depot-ubuntu-24.04-4
+    needs: setup
+    if: false
+    steps:
+      - name: Free up disk space
+        if: false  # dont need this on depot
+        run: |
+          df -h
+          sudo apt-get remove 'dotnet-*' azure-cli || true
+          sudo rm -rf /usr/local/lib/android/ || true
+          sudo docker image prune -a -f || true
+          df -h
+          lscpu
 
-  quickStartBuild:
+      - name: Set up Depot CLI
+        if: ${{ env.DOCKER_CACHE == 'DEPOT' }}
+        uses: depot/setup-action@v1
+  
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: 17
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/requirements.txt') }}
+
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+  
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Check out the repo
+        uses: acryldata/sane-checkout-action@v3
+    
+  
+      - name: run unit tests
+        run: |
+          ./gradlew test -x 
+      
+      - name: Show images
+        run: |
+          docker images
+
+  smoke-tests:
     name: Build all quickstart images
     runs-on: depot-ubuntu-24.04-4
     needs: setup
@@ -159,14 +211,10 @@ jobs:
       #    find metadata-service/war/build/docker/
       #    find datahub-frontend/build/docker/
   
-      - name: Build images
+      - name: quickStart
         run: |
-          ./gradlew dockerTag -x :docker:datahub-ingestion:dockerTag  -x :docker:datahub-ingestion-base:dockerTag
+          ./gradlew quickStartDebug
 
-      - name: run unit tests
-        run: |
-          ./gradlew :metadata-service:iceberg-catalog:test
-      
       - name: Show images
         run: |
           docker images
