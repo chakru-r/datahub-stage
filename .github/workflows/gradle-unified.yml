@@ -23,7 +23,7 @@ concurrency:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  DOCKER_CACHE: "GITHUB"
+  DOCKER_CACHE: "DEPOT"
   DEPOT_TOKEN: ${{ secrets.DEPOT_TOKEN }}
   DEPOT_PROJECT_ID: ${{ secrets.DEPOT_PROJECT_ID }}
   DATAHUB_GMS_IMAGE: "acryldata/datahub-gms"
@@ -43,7 +43,7 @@ permissions:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04-small
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
       slim_tag: ${{ steps.tag.outputs.slim_tag }}
@@ -122,7 +122,7 @@ jobs:
 
   quickStartBuild:
     name: Build all quickstart images
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-24.04
     needs: setup
     steps:
       - name: Free up disk space
