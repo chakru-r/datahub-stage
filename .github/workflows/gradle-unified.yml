@@ -122,7 +122,7 @@ jobs:
 
   quickStartBuild:
     name: Build all quickstart images
-    runs-on: depot-ubuntu-24.04
+    runs-on: depot-ubuntu-24.04-4
     needs: setup
     steps:
       - name: Free up disk space
