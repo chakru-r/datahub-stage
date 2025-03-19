@@ -1,4 +1,4 @@
-name: Docker Build, Scan, Test
+name: Unified build test and scan
 on:
   push:
     branches:
