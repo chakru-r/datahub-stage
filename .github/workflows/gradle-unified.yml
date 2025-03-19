@@ -152,21 +152,20 @@ jobs:
         run: |
           depot configure-docker
 
-      - name: Pre-build artifacts for docker image
-        run: |
-          ./gradlew quickstartdebugprepareall
-          find metadata-service/war/build/docker/
-          find datahub-frontend/build/docker/
-
-      
-      - name: run unit tests
-        run: |
-          ./gradlew :metadata-service:iceberg-catalog:test
+      #- name: Pre-build artifacts for docker image
+      #  run: |
+      #    ./gradlew quickstartdebugprepareall
+      #    find metadata-service/war/build/docker/
+      #    find datahub-frontend/build/docker/
   
       - name: Build images
         run: |
           ./gradlew dockerTag -x :docker:datahub-ingestion:dockerTag  -x :docker:datahub-ingestion-base:dockerTag
-    
+
+      - name: run unit tests
+        run: |
+          ./gradlew :metadata-service:iceberg-catalog:test
+      
       - name: Show images
         run: |
           docker images
