@@ -28,3 +28,7 @@ yarn-error.log*
 # gql codegen
 *.generated.ts
 /.vscode
+
+# build
+.yarn-test-sentinel
+.yarn-lint-sentinel
