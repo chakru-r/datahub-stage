@@ -191,6 +191,20 @@ jobs:
         with:
           distribution: "zulu"
           java-version: 17
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/requirements.txt') }}
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+    
+
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Check out the repo
